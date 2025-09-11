@@ -1,0 +1,30 @@
+{
+  "name": "marks-assistant-line-bot",
+  "version": "1.0.0",
+  "description": "A personal reminder assistant LINE bot for Mark",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@line/bot-sdk": "^7.5.2",
+    "@supabase/supabase-js": "^2.38.4",
+    "express": "^4.18.2",
+    "node-cron": "^3.0.3",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
+    "natural": "^6.7.0",
+    "compromise": "^14.10.0"
+  },
+  "devDependencies": {
+    "vercel": "^32.5.6"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["line-bot", "reminder", "assistant", "vercel", "supabase"],
+  "author": "Mark",
+  "license": "MIT"
+}
