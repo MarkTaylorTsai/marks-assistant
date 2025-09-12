@@ -11,5 +11,11 @@
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/heartbeat",
+      "schedule": "*/10 * * * *"
+    }
   ]
 }
