@@ -107,7 +107,7 @@ TIMEZONE=Asia/Taipei
 
 ### 5. Cron Job Setup
 
-Set up three cron jobs at [cron-job.org](https://cron-job.org/):
+Set up four cron jobs at [cron-job.org](https://cron-job.org/):
 
 #### Daily Reminder (5:30 AM EST)
 
@@ -115,6 +115,7 @@ Set up three cron jobs at [cron-job.org](https://cron-job.org/):
 - **Schedule**: `30 5 * * *` (5:30 AM daily)
 - **Method**: GET
 - **Headers**: `X-API-Key: your_cron_api_key` (alternative to query param)
+- **Purpose**: Sends daily task summary and processes recurring tasks
 
 #### Hourly Reminder Check
 
@@ -122,6 +123,7 @@ Set up three cron jobs at [cron-job.org](https://cron-job.org/):
 - **Schedule**: `0 * * * *` (Every hour)
 - **Method**: GET
 - **Headers**: `X-API-Key: your_cron_api_key` (alternative to query param)
+- **Purpose**: Processes 1-hour-before reminders
 
 #### Special Reminder Check
 
@@ -129,6 +131,25 @@ Set up three cron jobs at [cron-job.org](https://cron-job.org/):
 - **Schedule**: `0 6 * * *` (6:00 AM daily)
 - **Method**: GET
 - **Headers**: `X-API-Key: your_cron_api_key` (alternative to query param)
+- **Purpose**: Processes special day-before and day-of reminders
+
+#### Cleanup (Daily at 7:00 AM)
+
+- **URL**: `https://your-vercel-app.vercel.app/api/cron/cleanup?api_key=your_cron_api_key`
+- **Schedule**: `0 7 * * *` (7:00 AM daily)
+- **Method**: GET
+- **Headers**: `X-API-Key: your_cron_api_key` (alternative to query param)
+- **Purpose**: Cleans up passed tasks and generates recurring task instances
+
+#### Cron Job Configuration Tips
+
+1. **API Key Security**: Use the same `CRON_API_KEY` environment variable for all cron jobs
+2. **Authentication**: You can pass the API key either as:
+   - Query parameter: `?api_key=your_key`
+   - Header: `X-API-Key: your_key`
+   - Authorization header: `Authorization: Bearer your_key`
+3. **Timezone**: Adjust schedules based on your timezone (default: Asia/Taipei)
+4. **Monitoring**: cron-job.org provides execution logs and failure notifications
 
 ## Usage Examples
 

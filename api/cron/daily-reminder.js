@@ -64,10 +64,6 @@ module.exports = async (req, res) => {
     // Generate recurring task instances
     console.log('🔍 Generating recurring task instances...');
     await reminderScheduler.generateRecurringInstances();
-    
-    // Clean up old tasks
-    console.log('🔍 Cleaning up old tasks...');
-    await reminderScheduler.cleanup();
 
     console.log('✅ Daily reminder process completed successfully:', {
       tasksCount: todaysTasks.length,
