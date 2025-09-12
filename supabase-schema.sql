@@ -67,7 +67,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Create recurring task instances view
+--- Create recurring task instances view (fixed)
 CREATE OR REPLACE VIEW recurring_task_instances AS
 SELECT 
     t.id,
@@ -78,31 +78,55 @@ SELECT
     t.notes,
     t.created_at,
     t.updated_at,
-    CASE 
-        WHEN t.recurrence_pattern->>'type' = 'weekly' THEN
-            generate_series(
-                t.scheduled_time,
-                NOW() + INTERVAL '3 months',
-                INTERVAL '1 week'
-            )
-        WHEN t.recurrence_pattern->>'type' = 'biweekly' THEN
-            generate_series(
-                t.scheduled_time,
-                NOW() + INTERVAL '3 months',
-                INTERVAL '2 weeks'
-            )
-        WHEN t.recurrence_pattern->>'type' = 'monthly' THEN
-            generate_series(
-                t.scheduled_time,
-                NOW() + INTERVAL '3 months',
-                INTERVAL '1 month'
-            )
-        ELSE t.scheduled_time
-    END as instance_time
+    gs.instance_time
 FROM tasks t
-WHERE t.is_recurring = TRUE 
-AND t.is_active = TRUE
-AND t.recurrence_pattern IS NOT NULL;
+JOIN LATERAL generate_series(
+    t.scheduled_time,
+    NOW() + INTERVAL '3 months',
+    INTERVAL '1 week'
+) gs(instance_time) ON t.recurrence_pattern->>'type' = 'weekly'
+WHERE t.is_recurring = TRUE AND t.is_active = TRUE
+
+UNION ALL
+
+SELECT 
+    t.id,
+    t.user_id,
+    t.title,
+    t.description,
+    t.is_special,
+    t.notes,
+    t.created_at,
+    t.updated_at,
+    gs.instance_time
+FROM tasks t
+JOIN LATERAL generate_series(
+    t.scheduled_time,
+    NOW() + INTERVAL '3 months',
+    INTERVAL '2 weeks'
+) gs(instance_time) ON t.recurrence_pattern->>'type' = 'biweekly'
+WHERE t.is_recurring = TRUE AND t.is_active = TRUE
+
+UNION ALL
+
+SELECT 
+    t.id,
+    t.user_id,
+    t.title,
+    t.description,
+    t.is_special,
+    t.notes,
+    t.created_at,
+    t.updated_at,
+    gs.instance_time
+FROM tasks t
+JOIN LATERAL generate_series(
+    t.scheduled_time,
+    NOW() + INTERVAL '3 months',
+    INTERVAL '1 month'
+) gs(instance_time) ON t.recurrence_pattern->>'type' = 'monthly'
+WHERE t.is_recurring = TRUE AND t.is_active = TRUE;
+
 
 -- Row Level Security (RLS) policies
 ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;

@@ -32,10 +32,6 @@
       "dest": "/api/health.js"
     },
     {
-      "src": "/api/test-webhook",
-      "dest": "/api/test-webhook.js"
-    },
-    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }
