@@ -11,11 +11,21 @@ const client = new line.Client(config);
 const middleware = line.middleware(config);
 
 module.exports = async (req, res) => {
+  console.log('🔍 Webhook endpoint accessed:', {
+    method: req.method,
+    url: req.url,
+    headers: req.headers,
+    timestamp: new Date().toISOString()
+  });
+
   // Set security headers
   security.setSecurityHeaders(res);
   
   // Apply rate limiting
-  security.rateLimit(req, res);
+  const rateLimitResult = security.rateLimit(req, res);
+  if (rateLimitResult === false) {
+    return; // Response already sent by rate limiting
+  }
   
   // Only allow POST requests
   if (req.method !== 'POST') {
@@ -30,7 +40,7 @@ module.exports = async (req, res) => {
     console.log('🔍 Received webhook request:', {
       method: req.method,
       headers: req.headers,
-      bodySize: JSON.stringify(req.body).length,
+      bodySize: req.body ? JSON.stringify(req.body).length : 0,
       clientIP: security.getClientIP(req),
       timestamp: new Date().toISOString()
     });
@@ -44,7 +54,7 @@ module.exports = async (req, res) => {
 
     // Verify signature using LINE middleware
     try {
-      const body = JSON.stringify(req.body);
+      const body = JSON.stringify(req.body || {});
       const isValid = line.validateSignature(body, config.channelSecret, signature);
       
       if (!isValid) {

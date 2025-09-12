@@ -8,6 +8,34 @@
   ],
   "routes": [
     {
+      "src": "/api/webhook",
+      "dest": "/api/webhook.js"
+    },
+    {
+      "src": "/api/cron/cleanup",
+      "dest": "/api/cron/cleanup.js"
+    },
+    {
+      "src": "/api/cron/daily-reminder",
+      "dest": "/api/cron/daily-reminder.js"
+    },
+    {
+      "src": "/api/cron/hourly-reminder",
+      "dest": "/api/cron/hourly-reminder.js"
+    },
+    {
+      "src": "/api/cron/special-reminder",
+      "dest": "/api/cron/special-reminder.js"
+    },
+    {
+      "src": "/api/health",
+      "dest": "/api/health.js"
+    },
+    {
+      "src": "/api/test-webhook",
+      "dest": "/api/test-webhook.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }
